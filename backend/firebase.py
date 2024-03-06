@@ -1,10 +1,10 @@
 from firebase_admin import credentials, storage, initialize_app
-import anchor.backend.data.extracted
-import anchor.backend.data.proto.pose_pb2 as Pose
-import anchor.backend.data.proto.intrinsics_pb2 as Intrinsics
-import anchor.backend.data.proto.video_pb2 as video_pb2
-import anchor.backend.data.proto.april_tag_pb2 as AprilTag
-import anchor.backend.data.proto.google_cloud_anchor_pb2 as GCloudAnchor
+import anchor.backend.extracted
+import anchor.backend.proto.pose_pb2 as Pose
+import anchor.backend.proto.intrinsics_pb2 as Intrinsics
+import anchor.backend.proto.video_pb2 as video_pb2
+import anchor.backend.proto.april_tag_pb2 as AprilTag
+import anchor.backend.proto.google_cloud_anchor_pb2 as GCloudAnchor
 from multiprocessing.pool import ThreadPool as Pool
 
 
