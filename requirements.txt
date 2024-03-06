@@ -1,8 +1,6 @@
 firebase_admin
 anchor
-multiprocessing.pool
+multiprocess
 pathlib
-shutil
-tempfile
+temp
 av
-copy
