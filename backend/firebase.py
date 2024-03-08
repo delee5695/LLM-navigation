@@ -321,3 +321,9 @@ if __name__ == "__main__":
         "testing_31DAEA14-2262-495D-8792-8B885A0B2EC0_training_ua-5ead66ddada8b6fe9b04335779f1ec4f_richard_test_3.tar",
     )
     downloader_1.extract_ios_logger_tar()
+    breakpoint()
+    localization_phase_list = downloader_1.extracted_data.sensors_extracted[
+        "localization_phase"
+    ]["poses"]
+
+    # get all the `translation` dictionaries out
