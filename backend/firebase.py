@@ -1,10 +1,10 @@
 from firebase_admin import credentials, storage, initialize_app
-import anchor.backend.extracted
-import anchor.backend.proto.pose_pb2 as Pose
-import anchor.backend.proto.intrinsics_pb2 as Intrinsics
-import anchor.backend.proto.video_pb2 as video_pb2
-import anchor.backend.proto.april_tag_pb2 as AprilTag
-import anchor.backend.proto.google_cloud_anchor_pb2 as GCloudAnchor
+import extracted
+import proto_python.pose_pb2 as Pose
+import proto_python.intrinsics_pb2 as Intrinsics
+import proto_python.video_pb2 as video_pb2
+import proto_python.april_tag_pb2 as AprilTag
+import proto_python.google_cloud_anchor_pb2 as GCloudAnchor
 from multiprocessing.pool import ThreadPool as Pool
 
 
@@ -36,7 +36,7 @@ def list_tars():
 class FirebaseDownloader:
     service_account_name: str = "stepnavigation-firebase-adminsdk-service-account.json"
     service_account_path: str = (
-        Path(__file__).parent.parent.parent / service_account_name
+        Path(__file__).parent.parent / service_account_name
     ).as_posix()
     # do not prefix bucket name with gs:// https://github.com/firebase/firebase-admin-python/issues/280#issuecomment-484980833
     firebase_bucket_name: str = "stepnavigation.appspot.com"
@@ -60,9 +60,7 @@ class FirebaseDownloader:
             FirebaseDownloader.root_download_dir / Path(self.tar_name).stem
         )
 
-        self.extracted_data = anchor.backend.data.extracted.Extracted(
-            self.local_extraction_location
-        )
+        self.extracted_data = extracted.Extracted(self.local_extraction_location)
 
     @staticmethod
     def proto_with_phase(given_proto: any, mapping_phase: bool):
@@ -319,7 +317,7 @@ class FirebaseDownloader:
 # test the extractor here
 if __name__ == "__main__":
     downloader_1 = FirebaseDownloader(
-        "iosLoggerDemo/Ljur5BYFXdhsGnAlEsmjqyNG5fJ2",
-        "047F9850-20BB-4AC0-9650-C2558C9EFC03.tar",
+        "iosLoggerDemo/tarQueue",
+        "testing_31DAEA14-2262-495D-8792-8B885A0B2EC0_training_ua-5ead66ddada8b6fe9b04335779f1ec4f_richard_test_3.tar",
     )
     downloader_1.extract_ios_logger_tar()
