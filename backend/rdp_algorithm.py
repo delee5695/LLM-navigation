@@ -1,6 +1,7 @@
 from firebase import FirebaseDownloader
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 import rdp
 
 if __name__ == "__main__":
@@ -18,6 +19,32 @@ if __name__ == "__main__":
     # print(df["translation"])
     # print(df["translation"].to_numpy())
     positions = df["translation"].to_numpy()  # .reshape(870, 3)
+    # positions_rounded = np.array(
+    #     [[round(val, 8) for val in sublist] for sublist in positions]
+    # )
+    # for sublist in positions:
+    #     for idx, num in enumerate(sublist):
+    #         sublist[idx].replace(np.round(num, 8))
+    # positions = positions_rounded
+    # print(positions)
     positions = np.array([np.array(sublist) for sublist in positions])
 
-    print(rdp.rdp(positions, 0.1))
+    abs_positions = rdp.rdp(positions, 0.6)
+    #     print(abs_positions)
+    #     abs_timestamp = []
+    #     for position in abs_positions:
+    #         print(df["translation"].size, position.size)
+    #         abs_timestamp.append(df.loc[df["translation"] == position]["timestamp"])
+    #     print(df["translation"])
+    #     print(abs_positions[0])
+    # print(abs_timestamp)
+    # Plot the original path
+    x, y, z = zip(*positions)
+    plt.plot(z, x, marker="o", linestyle="-", color="b")
+
+    # Plot the original path
+    x, y, z = zip(*abs_positions)
+    plt.plot(z, x, marker="o", linestyle="-", color="r")
+    plt.axis("equal")
+
+    plt.show()

@@ -7,3 +7,4 @@ av
 numpy
 Pillow
 rdp
+protobuf == 3.20.3
