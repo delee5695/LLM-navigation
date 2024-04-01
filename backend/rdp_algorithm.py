@@ -2,12 +2,21 @@ from firebase import FirebaseDownloader
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import cv2 as cv
 import rdp
+
+TAR_FILE_NAME = (
+    "training_ua-5ad6b6714d5e52c97ca53c47f38b9655_Test_3-13-occamlab-3rd_floor"
+)
+EXTRACTED_IMAGES = (
+    f"backend/.cache/firebase_data/{TAR_FILE_NAME}/extracted/localization-video/"
+)
+critical_images = {}
 
 if __name__ == "__main__":
     downloader_1 = FirebaseDownloader(
         "iosLoggerDemo/tarQueue",
-        "training_ua-5ad6b6714d5e52c97ca53c47f38b9655_Test_3-13-occamlab-3rd_floor.tar",
+        f"{TAR_FILE_NAME}.tar",
     )
     downloader_1.extract_ios_logger_tar()
     # breakpoint()
@@ -16,35 +25,42 @@ if __name__ == "__main__":
     ]["poses"]
 
     df = pd.DataFrame(localization_phase_list)
-    # print(df["translation"])
-    # print(df["translation"].to_numpy())
-    positions = df["translation"].to_numpy()  # .reshape(870, 3)
-    # positions_rounded = np.array(
-    #     [[round(val, 8) for val in sublist] for sublist in positions]
-    # )
-    # for sublist in positions:
-    #     for idx, num in enumerate(sublist):
-    #         sublist[idx].replace(np.round(num, 8))
-    # positions = positions_rounded
-    # print(positions)
-    positions = np.array([np.array(sublist) for sublist in positions])
+    positions = np.array(
+        [np.array(sublist) for sublist in df["translation"].to_numpy()]
+    )
 
-    abs_positions = rdp.rdp(positions, 0.6)
-    #     print(abs_positions)
-    #     abs_timestamp = []
-    #     for position in abs_positions:
-    #         print(df["translation"].size, position.size)
-    #         abs_timestamp.append(df.loc[df["translation"] == position]["timestamp"])
-    #     print(df["translation"])
-    #     print(abs_positions[0])
-    # print(abs_timestamp)
-    # Plot the original path
-    x, y, z = zip(*positions)
-    plt.plot(z, x, marker="o", linestyle="-", color="b")
+    abs_positions = rdp.rdp(positions, 0.6, return_mask=True)
 
-    # Plot the original path
-    x, y, z = zip(*abs_positions)
-    plt.plot(z, x, marker="o", linestyle="-", color="r")
-    plt.axis("equal")
+    abs_timestamp = []
+    indexes = []
+    for idx, abs_position in enumerate(abs_positions):
+        if abs_position:
+
+            critical_images[idx] = df.iloc[idx]["timestamp"]
+
+    fig = plt.figure(figsize=(3, len(critical_images) // 3 + 1))
+    for idx, key in enumerate(critical_images.keys()):
+
+        # axarr[key].imshow(f"{EXTRACTED_IMAGES}{key}.jpg")
+        img = cv.imread(f"{EXTRACTED_IMAGES}{key}.jpg")
+        fig.add_subplot(3, len(critical_images) // 3 + 1, idx + 1)
+        plt.imshow(img)
+        plt.axis("off")
+        plt.title(f"Timestamp: {critical_images[key]}")
 
     plt.show()
+    # for abs_position in abs_positions:
+
+    # abs_timestamp.append([ for abs_position in abs_positions])
+    # abs_timestamp.append(df.loc[df["translation"] == abs_position]["timestamp"])
+
+    # Plot the original path
+    # x, y, z = zip(*positions)
+    # plt.plot(z, x, marker="o", linestyle="-", color="b")
+
+    # # Plot the original path
+    # x, y, z = zip(*abs_positions)
+    # plt.plot(z, x, marker="o", linestyle="-", color="r")
+    # plt.axis("equal")
+
+    # plt.show()
