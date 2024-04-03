@@ -2,7 +2,7 @@ from firebase import FirebaseDownloader
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-import cv2 as cv
+from PIL import Image
 import rdp
 
 TAR_FILE_NAME = (
@@ -40,27 +40,10 @@ if __name__ == "__main__":
 
     fig = plt.figure(figsize=(3, len(critical_images) // 3 + 1))
     for idx, key in enumerate(critical_images.keys()):
-
-        # axarr[key].imshow(f"{EXTRACTED_IMAGES}{key}.jpg")
-        img = cv.imread(f"{EXTRACTED_IMAGES}{key}.jpg")
+        img = Image.open(f"{EXTRACTED_IMAGES}{key}.jpg")
         fig.add_subplot(3, len(critical_images) // 3 + 1, idx + 1)
         plt.imshow(img)
         plt.axis("off")
         plt.title(f"Timestamp: {critical_images[key]}")
 
     plt.show()
-    # for abs_position in abs_positions:
-
-    # abs_timestamp.append([ for abs_position in abs_positions])
-    # abs_timestamp.append(df.loc[df["translation"] == abs_position]["timestamp"])
-
-    # Plot the original path
-    # x, y, z = zip(*positions)
-    # plt.plot(z, x, marker="o", linestyle="-", color="b")
-
-    # # Plot the original path
-    # x, y, z = zip(*abs_positions)
-    # plt.plot(z, x, marker="o", linestyle="-", color="r")
-    # plt.axis("equal")
-
-    # plt.show()
