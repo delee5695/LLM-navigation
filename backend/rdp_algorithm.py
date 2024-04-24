@@ -48,10 +48,15 @@ if __name__ == "__main__":
     degree = {}
 
     for idx, num in enumerate(critical_images.keys()):
-
+        # check everything except for the last keypoint
         if idx != len(critical_images) - 1:
+            min_rotation_idx = num
             min_rotation = 10
-            min_idx = num
+            min_angle_idx = num
+            min_angle = 10
+            best_fit = 10
+            best_fit_idx = num
+
             for i in range(num, num + 120):
                 rotation_matrix0 = (
                     np.array(df.iloc[i]["rotation_matrix"]).reshape((4, 4)).T
@@ -69,43 +74,55 @@ if __name__ == "__main__":
                     df.iloc[num].translation
                 )
 
-                print(
-                    np.arccos(
-                        np.dot(pointing_vec, -heading)
-                        / (np.linalg.norm(pointing_vec) * np.linalg.norm(-1 * heading))
-                    )
+                heading_angle = np.arccos(
+                    np.dot(pointing_vec, -heading)
+                    / (np.linalg.norm(pointing_vec) * np.linalg.norm(-1 * heading))
                 )
-                print(np.arccos((np.trace(relative_rot) - 1) / 2))
+                angular_velocity = np.arccos((np.trace(relative_rot) - 1) / 2)
 
-            breakpoint()
+                # min_angle = min(heading_angle, min_angle)
+                # if min_angle == heading_angle:
+                #     min_angle_idx = i
+                # min_rotation = min(min_rotation, angular_velocity)
+                # if min_rotation == angular_velocity:
+                #     min_rotation_idx = i
 
-    # # image plotting
+                weighted_angle_velocity = heading_angle + angular_velocity * 0.3
+                best_fit = min(best_fit, weighted_angle_velocity)
+                if best_fit == weighted_angle_velocity:
+                    best_fit_idx = i
+            # degree[min_angle_idx] = str(idx) + " adjusted with min_angle"
+            # degree[min_rotation_idx] = str(idx) + " adjust with min_rotation"
+            degree[best_fit_idx] = str(idx) + " final adjusted"
+            # breakpoint()
 
-    # fig = plt.figure(figsize=(3, len(degree) // 3 + 1))
+        # degree[num] = str(idx) + " original"
 
-    # backend = Path(__file__).parent
-    # shutil.rmtree(f"{backend}/critical_images/{TAR_FILE_NAME}")
-    # os.mkdir(f"{backend}/critical_images/{TAR_FILE_NAME}")
+    # image plotting
 
-    # for idx, image_number in enumerate(degree.keys()):
-    #     img = Image.open(f"{EXTRACTED_IMAGES}{image_number}.jpg")
-    #     fig.add_subplot(3, len(degree) // 3 + 1, idx + 1)
-    #     plt.imshow(img)
-    #     plt.axis("off")
-    #     # plt.title(f"Timestamp: {str(degree[image_number]-30)[8:10]} (seconds)")
-    #     plt.title(f"degree: {degree[image_number]}")
-    #     shutil.copy(
-    #         f"{EXTRACTED_IMAGES}{image_number}.jpg",
-    #         f"{backend}/critical_images/{TAR_FILE_NAME}",
-    #     )
-    # plt.show()
-    #     # # route plotting
-    #     # x, y, z = zip(*positions)
-    #     # plt.plot(z, x, marker="o", linestyle="-", color="b")
+    fig = plt.figure(figsize=(len(degree) // 3 + 1, 3))
 
-    #     # # Plot the original path
-    #     # x, y, z = zip(*abs_positions)
-    #     # plt.plot(z, x, marker="o", linestyle="-", color="r")
-    #     # plt.axis("equal")
+    backend = Path(__file__).parent
+    shutil.rmtree(f"{backend}/critical_images/{TAR_FILE_NAME}")
+    os.mkdir(f"{backend}/critical_images/{TAR_FILE_NAME}")
 
-    #
+    for idx, image_number in enumerate(degree.keys()):
+        img = Image.open(f"{EXTRACTED_IMAGES}{image_number}.jpg").rotate(-130)
+        fig.add_subplot(3, len(degree) // 3 + 1, idx + 1)
+        plt.imshow(img)
+        plt.axis("off")
+        # plt.title(f"Timestamp: {str(degree[image_number]-30)[8:10]} (seconds)")
+        plt.title(f"{degree[image_number]}")
+        shutil.copy(
+            f"{EXTRACTED_IMAGES}{image_number}.jpg",
+            f"{backend}/critical_images/{TAR_FILE_NAME}",
+        )
+    plt.show()
+    # # route plotting
+    # x, y, z = zip(*positions)
+    # plt.plot(z, x, marker="o", linestyle="-", color="b")
+
+    # # Plot the original path
+    # x, y, z = zip(*abs_positions)
+    # plt.plot(z, x, marker="o", linestyle="-", color="r")
+    # plt.axis("equal")
