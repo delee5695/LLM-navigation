@@ -5,6 +5,7 @@ client = OpenAI()
 import base64
 import requests
 import secret
+import json
 
 # OpenAI API Key
 api_key = secret.OPENAI_API_KEY
@@ -17,7 +18,7 @@ def encode_image(image_path):
 
 
 # Path to your image
-image_path = "backend/critical_images/training_ua-9843530f4d1fbbdbd0cc26bb3e655da1_HAL_lab_to_206/102.jpg"
+image_path = "adjusted_critical_images/Screenshot 2024-04-26 151032.png"
 
 # Getting the base64 string
 base64_image = encode_image(image_path)
@@ -47,5 +48,12 @@ payload = {
 response = requests.post(
     "https://api.openai.com/v1/chat/completions", headers=headers, json=payload
 )
-
 print(response.json())
+
+# Add to the json file
+JSON_PATH = "Hal_to_206_description.json"
+previous_response = json.loads(JSON_PATH)
+updated_response = previous_response.update(response.json())
+
+with open(JSON_PATH, "w") as outfile:
+    json.dump(updated_response, outfile)

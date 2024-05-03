@@ -1,0 +1,23 @@
+{
+    "id": "chatcmpl-9ILwLz6PrpH3DO53zkAv4m2DJtglh",
+    "object": "chat.completion",
+    "created": 1714161269,
+    "model": "gpt-4-turbo-2024-04-09",
+    "choices": [
+        {
+            "index": 0,
+            "message": {
+                "role": "assistant",
+                "content": "You are currently navigating through an indoor corridor. The floor is carpeted, which might help in distinguishing the walkable area from other types of flooring you may encounter. There is a door on the left-hand side at the beginning of the corridor. As you move forward, the corridor ends with large windows directly ahead, letting in natural light, which can create a contrast with the indoor lighting, affecting the perception of the end of the corridor. The path turns right at the end of this corridor. If you use the window light as a guide, it can help you align yourself to make a turn. There are no obstacles directly on the corridor path as you approach this turn."
+            },
+            "logprobs": null,
+            "finish_reason": "stop"
+        }
+    ],
+    "usage": {
+        "prompt_tokens": 350,
+        "completion_tokens": 135,
+        "total_tokens": 485
+    },
+    "system_fingerprint": "fp_5d12056990"
+}
